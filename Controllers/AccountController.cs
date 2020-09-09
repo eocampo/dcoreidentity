@@ -16,9 +16,11 @@ namespace dcoreidentity.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly UserManager<CustomUser> userManager;
+        //private readonly UserManager<CustomUser> userManager;
+        private readonly UserManager<IdentityUser> userManager;
 
-        public AccountController(UserManager<CustomUser> userManager){
+        // public AccountController(UserManager<CustomUser> userManager){
+        public AccountController(UserManager<IdentityUser> userManager){
             this.userManager = userManager;
         }
 
@@ -41,7 +43,7 @@ namespace dcoreidentity.Controllers
                 var user = await userManager.FindByNameAsync(model.UserName);
 
                 if (user == null) {
-                    user = new CustomUser {
+                    user = new IdentityUser {
                         Id = Guid.NewGuid().ToString(),
                         UserName = model.UserName
                     };

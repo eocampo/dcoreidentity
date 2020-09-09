@@ -9,9 +9,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity;
+//using Microsoft.Extensions.Identity.EntityFrameworkCore;
 using dcoreidentity.Models;
 using dcoreidentity.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace dcoreidentity
 {
@@ -26,8 +30,18 @@ namespace dcoreidentity
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllersWithViews();
-            services.AddIdentityCore<CustomUser>(options => { });
-            services.AddScoped<IUserStore<CustomUser>, MemoryUserStore>();
+
+            var identityConnectionString = Configuration["ConnectionStrings:IdentityConnection"];
+            var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+
+            services.AddDbContext<IdentityDbContext>(options => 
+                options.UseSqlServer(identityConnectionString
+                , sql => sql.MigrationsAssembly(migrationAssembly)));
+
+            services.AddIdentityCore<IdentityUser>(options => { });
+            // services.AddScoped<IUserStore<CustomUser>, MemoryUserStore>();
+            services.AddScoped<IUserStore<IdentityUser>,
+                 UserOnlyStore<IdentityUser, IdentityDbContext>>();
             services.AddAuthentication("Cookies") //CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie("Cookies", options => options.LoginPath = "/Account/Login");
         }
