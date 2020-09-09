@@ -33,7 +33,9 @@ namespace dcoreidentity
 
             var identityConnectionString = Configuration["ConnectionStrings:IdentityConnection"];
             var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(identityConnectionString
+
+            services.AddDbContext<IdentityDbContext>(options => 
+                options.UseSqlServer(identityConnectionString
                 , sql => sql.MigrationsAssembly(migrationAssembly)));
 
             services.AddIdentityCore<IdentityUser>(options => { });
