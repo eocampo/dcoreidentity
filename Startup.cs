@@ -36,7 +36,7 @@ namespace dcoreidentity
             services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(identityConnectionString
                 , sql => sql.MigrationsAssembly(migrationAssembly)));
 
-            services.AddIdentityCore<CustomUser>(options => { });
+            services.AddIdentityCore<IdentityUser>(options => { });
             // services.AddScoped<IUserStore<CustomUser>, MemoryUserStore>();
             services.AddScoped<IUserStore<IdentityUser>,
                  UserOnlyStore<IdentityUser, IdentityDbContext>>();
